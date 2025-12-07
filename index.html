@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculadora de ROI - Wize Analytics">
+    <title>Calculadora de ROI - Wize Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <img src="img/wize-analytics-logo.png" alt="Wize Analytics Logo">
+            </div>
+            <h1 class="title">Calculadora de ROI</h1>
+            <p class="subtitle">Descubra quanto você pode economizar com automação de dados</p>
+        </header>
+
+        <!-- Formulário de Entrada -->
+        <section class="calculator-section">
+            <div class="input-group">
+                <label for="monthlySalary" class="input-label">Salário mensal do colaborador (R$)</label>
+                <input type="number" id="monthlySalary" class="input-field" placeholder="5000" min="0" step="100">
+            </div>
+
+            <div class="input-group">
+                <label for="timeSpent" class="input-label">Horas gastas por mês nesta tarefa</label>
+                <input type="number" id="timeSpent" class="input-field" placeholder="40" min="0" step="5">
+            </div>
+
+            <button id="calculateBtn" class="calculate-btn">Calcular ROI</button>
+        </section>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Calculando...</p>
+        </div>
+
+        <!-- Resultados -->
+        <section id="resultsSection" class="results-section" style="display: none;">
+            
+            <!-- Resumo Formal -->
+            <div class="formal-summary">
+                <p class="summary-title">Análise de Viabilidade</p>
+                <p class="summary-content">
+                    Considerando o salário informado acrescido dos encargos trabalhistas obrigatórios 
+                    (13º salário, férias, FGTS e impostos), totalizando <strong id="totalCostSummary">R$ 0</strong> mensais, 
+                    o retorno do investimento ocorreria em <strong id="paybackSummary">0 meses</strong>, 
+                    garantindo um ROI de <strong id="roiSummary">0%</strong> no período de 12 meses, 
+                    considerando um investimento médio em automação de dados no valor de <strong id="investmentSummary">R$ 6.000</strong>.
+                </p>
+            </div>
+
+            <!-- Métricas Principais -->
+            <div class="metrics-simple">
+                <div class="metric-box">
+                    <div class="metric-number" id="roiValue">-</div>
+                    <div class="metric-name">ROI em 12 meses</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-number" id="paybackPeriod">-</div>
+                    <div class="metric-name">Payback</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-number" id="yearSavings">-</div>
+                    <div class="metric-name">Economia Anual</div>
+                </div>
+            </div>
+
+            <!-- Gráfico Aprimorado -->
+            <div class="chart-box">
+                <div class="chart-header">
+                    <h3 class="chart-title">Retorno do Investimento</h3>
+                    <p class="chart-subtitle">Projeção de economia acumulada ao longo de 12 meses</p>
+                </div>
+                <canvas id="savingsChart"></canvas>
+            </div>
+
+            <!-- Benefícios com Destaque -->
+            <div class="benefits-box">
+                <h3>Benefícios da Automação</h3>
+                <div class="benefits-list">
+                    <div class="benefit">
+                        <svg class="benefit-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <circle cx="10" cy="10" r="10" fill="#22c55e"/>
+                            <path d="M6 10L8.5 12.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Redução de erros operacionais</span>
+                    </div>
+                    <div class="benefit">
+                        <svg class="benefit-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <circle cx="10" cy="10" r="10" fill="#22c55e"/>
+                            <path d="M6 10L8.5 12.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Decisões estratégicas em tempo real</span>
+                    </div>
+                    <div class="benefit">
+                        <svg class="benefit-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <circle cx="10" cy="10" r="10" fill="#22c55e"/>
+                            <path d="M6 10L8.5 12.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Equipe focada em atividades estratégicas</span>
+                    </div>
+                    <div class="benefit">
+                        <svg class="benefit-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <circle cx="10" cy="10" r="10" fill="#22c55e"/>
+                            <path d="M6 10L8.5 12.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Escalabilidade sem custos proporcionais</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTAs -->
+            <div class="cta-box">
+                <a href="https://api.whatsapp.com/send/?phone=43996034145&text=Olá! Calculei o ROI e gostaria de conversar sobre automação" target="_blank" class="btn-cta">Fale Conosco</a>
+                <a href="https://wizeanalytics.com.br/analise-gratuita" target="_blank" class="btn-cta">Agende uma Avaliação Gratuita</a>
+            </div>
+
+            <button id="recalculateBtn" class="btn-recalculate">Calcular Novamente</button>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2025 Wize Analytics - Todos os direitos reservados</p>
+            <p class="footer-link"><a href="https://wizeanalytics.com.br" target="_blank">wizeanalytics.com.br</a></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
