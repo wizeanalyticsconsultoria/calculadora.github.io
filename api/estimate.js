@@ -38,7 +38,8 @@ Considere:
 Faixa de valores típicos no mercado brasileiro:
 - Automações simples (consolidação, relatórios básicos): R$ 3.000 - R$ 5.000
 - Automações médias (ETL, dashboards, APIs): R$ 6.000 - R$ 12.000
-- Automações complexas (pipelines, ML, múltiplas fontes): R$ 15.000 - R$ 30.000
+- Automações complexas (pipelines, múltiplas fontes): R$ 15.000 - R$ 30.000
+- Automações envolvendo Ciência de Dados e Inteligência Artificial: A partir de R$ 50.000
 
 Responda APENAS com o valor numérico estimado (sem símbolo de moeda, sem formatação, apenas o número). Exemplo: 8500`;
 

@@ -98,12 +98,14 @@ function processCalc(baseSalary, timeSpent, contractCost) {
     const yearSavings = monthlySavings * 12;
     const roi = ((yearSavings - contractCost) / contractCost) * 100;
     const paybackMonths = contractCost / monthlySavings;
+    const hoursSaved = timeSpent;
     
     // Atualizar resumo formal
     document.getElementById('totalCostSummary').textContent = fmt(totalMonthlyCost);
     document.getElementById('paybackSummary').textContent = `${paybackMonths.toFixed(1)} meses`;
     document.getElementById('roiSummary').textContent = `${roi.toFixed(0)}%`;
     document.getElementById('investmentSummary').textContent = fmt(contractCost);
+    document.getElementById('hoursSaved').textContent = `${hoursSaved.toFixed(0)}h`;
     
     // Atualizar métricas
     document.getElementById('roiValue').textContent = `${roi.toFixed(0)}%`;
