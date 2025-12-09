@@ -1,17 +1,27 @@
-// Configurações
+// Configurações do cálculo
 const MONTHLY_HOURS = 160;
-const AVG_CONTRACT_COST = 6000;
+const DEFAULT_CONTRACT_COST = 6000;
 const AVG_TIME_REDUCTION = 70;
-const LABOR_CHARGES = 0.54; // 54% de encargos (13º, férias, FGTS, impostos)
+const LABOR_CHARGES = 0.54;
 
 let savingsChart = null;
+let estimatedCost = DEFAULT_CONTRACT_COST;
 
 document.getElementById('calculateBtn').addEventListener('click', calculateROI);
 document.getElementById('recalculateBtn').addEventListener('click', reset);
 
-function calculateROI() {
+// Contador de caracteres
+const automationTextarea = document.getElementById('automationDescription');
+const charCount = document.getElementById('charCount');
+
+automationTextarea.addEventListener('input', function() {
+    charCount.textContent = this.value.length;
+});
+
+async function calculateROI() {
     const monthlySalary = parseFloat(document.getElementById('monthlySalary').value);
     const timeSpent = parseFloat(document.getElementById('timeSpent').value);
+    const automationDesc = document.getElementById('automationDescription').value.trim();
     
     if (!monthlySalary || monthlySalary <= 0) {
         alert('Informe o salário mensal');
@@ -23,15 +33,57 @@ function calculateROI() {
         return;
     }
     
+    if (!automationDesc || automationDesc.length < 10) {
+        alert('Descreva a automação (mínimo 10 caracteres)');
+        return;
+    }
+    
     document.getElementById('loadingOverlay').classList.add('active');
     
-    setTimeout(() => {
-        processCalc(monthlySalary, timeSpent);
+    try {
+        // Estimar custo com IA
+        estimatedCost = await estimateAutomationCost(automationDesc);
+        
+        // Processar cálculo
+        setTimeout(() => {
+            processCalc(monthlySalary, timeSpent, estimatedCost);
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }, 500);
+    } catch (error) {
+        console.error('Erro ao estimar custo:', error);
         document.getElementById('loadingOverlay').classList.remove('active');
-    }, 1000);
+        
+        // Usar valor padrão em caso de erro
+        alert('Não foi possível estimar o custo com IA. Usando valor médio padrão.');
+        estimatedCost = DEFAULT_CONTRACT_COST;
+        processCalc(monthlySalary, timeSpent, estimatedCost);
+    }
 }
 
-function processCalc(baseSalary, timeSpent) {
+async function estimateAutomationCost(description) {
+    try {
+        const response = await fetch('/api/estimate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ description })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erro na API: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.cost || DEFAULT_CONTRACT_COST;
+        
+    } catch (error) {
+        console.error('Erro ao estimar custo:', error);
+        throw error;
+    }
+}
+
+function processCalc(baseSalary, timeSpent, contractCost) {
     // Calcular custo total com encargos
     const totalMonthlyCost = baseSalary * (1 + LABOR_CHARGES);
     const hourlyCost = totalMonthlyCost / MONTHLY_HOURS;
@@ -43,7 +95,6 @@ function processCalc(baseSalary, timeSpent) {
     const newTaskCost = newTimeSpent * hourlyCost;
     const monthlySavings = currentTaskCost - newTaskCost;
     
-    const contractCost = AVG_CONTRACT_COST;
     const yearSavings = monthlySavings * 12;
     const roi = ((yearSavings - contractCost) / contractCost) * 100;
     const paybackMonths = contractCost / monthlySavings;
@@ -60,7 +111,7 @@ function processCalc(baseSalary, timeSpent) {
     document.getElementById('yearSavings').textContent = fmt(yearSavings);
     
     // Gráfico
-    generateChart(monthlySavings, contractCost, paybackMonths);
+    generateChart(monthlySavings, contractCost);
     
     // Mostrar resultados
     document.getElementById('resultsSection').style.display = 'block';
@@ -69,7 +120,7 @@ function processCalc(baseSalary, timeSpent) {
     }, 100);
 }
 
-function generateChart(monthlySavings, contractCost, paybackMonths) {
+function generateChart(monthlySavings, contractCost) {
     const ctx = document.getElementById('savingsChart').getContext('2d');
     
     if (savingsChart) savingsChart.destroy();
@@ -196,11 +247,14 @@ function reset() {
     document.getElementById('resultsSection').style.display = 'none';
     document.getElementById('monthlySalary').value = '';
     document.getElementById('timeSpent').value = '';
+    document.getElementById('automationDescription').value = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 document.querySelectorAll('.input-field').forEach(input => {
     input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') calculateROI();
+        if (e.key === 'Enter' && input.type !== 'textarea') {
+            calculateROI();
+        }
     });
 });

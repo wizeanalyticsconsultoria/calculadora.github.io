@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
 </head>
 <body>
     <div class="container">
@@ -35,6 +34,12 @@
                 <input type="number" id="timeSpent" class="input-field" placeholder="40" min="0" step="5">
             </div>
 
+            <div class="input-group">
+                <label for="automationDescription" class="input-label">Descreva a automação que precisa</label>
+                <textarea id="automationDescription" class="input-field textarea-field" placeholder="Ex: Preciso consolidar dados de 5 planilhas Excel diferentes em um único dashboard atualizado automaticamente..." rows="3" maxlength="500"></textarea>
+                <p class="input-hint">Nossa IA analisará sua necessidade e estimará o investimento necessário (<span id="charCount">0</span>/500 caracteres)</p>
+            </div>
+
             <button id="calculateBtn" class="calculate-btn">Calcular ROI</button>
         </section>
 
@@ -55,25 +60,49 @@
                     (13º salário, férias, FGTS e impostos), totalizando <strong id="totalCostSummary">R$ 0</strong> mensais, 
                     o retorno do investimento ocorreria em <strong id="paybackSummary">0 meses</strong>, 
                     garantindo um ROI de <strong id="roiSummary">0%</strong> no período de 12 meses, 
-                    considerando um investimento médio em automação de dados no valor de <strong id="investmentSummary">R$ 6.000</strong>.
+                    considerando um investimento estimado para a automação no valor de <strong id="investmentSummary">R$ 6.000</strong>.
                 </p>
             </div>
 
             <!-- Métricas Principais -->
             <div class="metrics-simple">
                 <div class="metric-box">
+                    <div class="metric-header">
+                        <div class="metric-name">ROI em 12 meses</div>
+                        <div class="info-icon" data-tooltip="Retorno sobre Investimento: quanto você ganha para cada R$ 1 investido. Calculado como (Economia Anual - Investimento) ÷ Investimento × 100">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <circle cx="8" cy="8" r="7" stroke="#a0aec0" stroke-width="1.5"/>
+                                <path d="M8 11.5V8M8 5.5H8.01" stroke="#a0aec0" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
                     <div class="metric-number" id="roiValue">-</div>
-                    <div class="metric-name">ROI em 12 meses</div>
                 </div>
                 
                 <div class="metric-box">
+                    <div class="metric-header">
+                        <div class="metric-name">Tempo de Retorno do Investimento</div>
+                        <div class="info-icon" data-tooltip="Tempo necessário para recuperar o investimento inicial. Calculado como Investimento ÷ Economia Mensal">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <circle cx="8" cy="8" r="7" stroke="#a0aec0" stroke-width="1.5"/>
+                                <path d="M8 11.5V8M8 5.5H8.01" stroke="#a0aec0" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
                     <div class="metric-number" id="paybackPeriod">-</div>
-                    <div class="metric-name">Payback</div>
                 </div>
                 
                 <div class="metric-box">
+                    <div class="metric-header">
+                        <div class="metric-name">Economia Anual</div>
+                        <div class="info-icon" data-tooltip="Quanto você economiza em 12 meses com a automação. Calculado como Economia Mensal × 12">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <circle cx="8" cy="8" r="7" stroke="#a0aec0" stroke-width="1.5"/>
+                                <path d="M8 11.5V8M8 5.5H8.01" stroke="#a0aec0" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
                     <div class="metric-number" id="yearSavings">-</div>
-                    <div class="metric-name">Economia Anual</div>
                 </div>
             </div>
 
@@ -88,7 +117,7 @@
 
             <!-- Benefícios com Destaque -->
             <div class="benefits-box">
-                <h3>Benefícios da Automação</h3>
+                <h3>Benefícios da Automação Além da Economia</h3>
                 <div class="benefits-list">
                     <div class="benefit">
                         <svg class="benefit-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
